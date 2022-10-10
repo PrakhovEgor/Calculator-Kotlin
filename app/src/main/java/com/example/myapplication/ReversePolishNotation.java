@@ -145,6 +145,4 @@ public class ReversePolishNotation {
     }
 
 
-    private ReversePolishNotation() {
-    }
 }

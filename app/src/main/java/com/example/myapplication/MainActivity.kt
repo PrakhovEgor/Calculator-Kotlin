@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import net.objecthunter.exp4j.ExpressionBuilder
 import kotlin.math.sqrt
 
 
@@ -16,8 +17,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
         var total : EditText = findViewById(R.id.editTextNumber)
 
+        var zero: View = findViewById(R.id.zero)
         var one: View = findViewById(R.id.one)
         var two: View = findViewById(R.id.two)
         var three: View = findViewById(R.id.three)
@@ -31,8 +35,12 @@ class MainActivity : AppCompatActivity() {
         var plus: View = findViewById(R.id.plus)
         var minus: View = findViewById(R.id.minus)
         var mult: View = findViewById(R.id.mult)
+        var delone: View = findViewById(R.id.delone)
         var total2: View = findViewById(R.id.total)
+        var delete: View = findViewById(R.id.delete)
+        var del: View = findViewById(R.id.del)
 
+        zero.setOnClickListener(object : View.OnClickListener{ override fun onClick(v: View?) {val a = total.text.toString() + "0"; total.setText(a)}})
         one.setOnClickListener(object : View.OnClickListener{ override fun onClick(v: View?) {val a = total.text.toString() + "1"; total.setText(a)}})
         two.setOnClickListener(object : View.OnClickListener{ override fun onClick(v: View?) {val a = total.text.toString() + "2"; total.setText(a)}})
         three.setOnClickListener(object : View.OnClickListener{ override fun onClick(v: View?) {val a = total.text.toString() + "3"; total.setText(a)}})
@@ -43,27 +51,87 @@ class MainActivity : AppCompatActivity() {
         eight.setOnClickListener(object : View.OnClickListener{ override fun onClick(v: View?) {val a = total.text.toString() + "8"; total.setText(a)}})
         nine.setOnClickListener(object : View.OnClickListener{ override fun onClick(v: View?) {val a = total.text.toString() + "9"; total.setText(a)}})
 
+        delone.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                val a = total.text.toString();
+                if (a != ""){
+                    total.setText(a.substring(0, a.length-1))
+            }}
+        })
+        delete.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                val a = total.text.toString();
+                if (a != ""){
+                    total.setText("")
+                }}
+        })
+
         plus.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 var a = total.text.toString()
-                val last = a[a.lastIndex].toString()
-                if (last == "+" || last == "X" || last == "/" || last == "-"){
-                    a = a.substring(0, a.lastIndex) + "+"
-                    total.setText(a)
-                } else{ total.setText(a + "+") }
+                if (a != "") {
+                    val last = a[a.lastIndex].toString()
+                    if (last == "+" || last == "*" || last == "/" || last == "-") {
+                        a = a.substring(0, a.lastIndex) + "+"
+                        total.setText(a)
+                    } else {
+                        total.setText(a + "+")
+                    }
+                }
             }
         })
 
         minus.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 var a = total.text.toString()
+                if (a != "") {
                 val last = a[a.lastIndex].toString()
-                if (last == "+" || last == "X" || last == "/" || last == "-"){
+                if (last == "+" || last == "*" || last == "/" || last == "-"){
                     a = a.substring(0, a.lastIndex) + "-"
                     total.setText(a)
                 } else{ total.setText(a + "-") }
-            }
+            }}
         })
+
+        mult.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                var a = total.text.toString()
+                if (a != "") {
+                val last = a[a.lastIndex].toString()
+                if (last == "+" || last == "*" || last == "/" || last == "-"){
+                    a = a.substring(0, a.lastIndex) + "*"
+                    total.setText(a)
+                } else{ total.setText(a + "*") }
+            }}
+        })
+        del.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                var a = total.text.toString()
+                if (a != "") {
+                val last = a[a.lastIndex].toString()
+                if (last == "+" || last == "*" || last == "/" || last == "-"){
+                    a = a.substring(0, a.lastIndex) + "/"
+                    total.setText(a)
+                } else{ total.setText(a + "/") }
+            }}
+        })
+        total2.setOnClickListener{
+            try{
+                val ex = ExpressionBuilder(total.text.toString()).build()
+                val res = ex.evaluate()
+
+                val longres = res.toLong()
+
+                if (res == longres.toDouble()){
+                    total.setText(longres.toString())
+                } else{
+                    total.setText(res.toString())
+                }
+
+            } catch (e : Exception){
+                Log.d("TAG", "Sum error ${e.message}")
+            }
+        }
 
 
 
